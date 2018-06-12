@@ -89,6 +89,7 @@ sleep 3s
 #--------------------------------
 if [ "$2" = "test" ]; then
 	sed -i 's/JAVA_OPT="${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g"/JAVA_OPT="${JAVA_OPT} -server -Xms128m -Xmx256m -Xmn256m"/' /data/inetpub/apache-rocketmq/bin/runbroker.sh
+	sed -i 's/JAVA_OPT="${JAVA_OPT} -server -Xms4g -Xmx4g -Xmn2g -XX:PermSize=128m -XX:MaxPermSize=320m"/JAVA_OPT="${JAVA_OPT} -server -Xms128m -Xmx256m -Xmn256m -XX:PermSize=128m -XX:MaxPermSize=320m"/' /data/inetpub/apache-rocketmq/bin/runserver.sh
 	echo ${L}'在runbroker.sh ,已将jvm最低要求内存8g改成了128m，否则启动不起' 
 else 
 	echo ${L_W}'/data/inetpub/apache-rocketmq/bin/runbroker.sh jvm配置 JAVA_OPT="${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g" 表示最低free内存要求8g，如果不够就启动不起' 
