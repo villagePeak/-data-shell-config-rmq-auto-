@@ -1,4 +1,6 @@
 #!/bin/bash
+#@Author Cheng
+#@QQ 8416837
 #init
 #定义常量
 #双主双从 互为主从 交叉部署
