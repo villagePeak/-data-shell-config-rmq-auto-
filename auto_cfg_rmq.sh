@@ -1,4 +1,9 @@
 #!/bin/bash
+#用法
+#部署第一台 sh auto_cfg_rmq.sh
+#部署第二台 sh auto_cfg_rmq.sh 1
+#测试机部署第一台 sh auto_cfg_rmq.sh 0 test
+#测试机部署第二台 sh auto_cfg_rmq.sh 1 test
 #@Author Cheng
 #@QQ 8416837
 #init
@@ -80,6 +85,15 @@ sh /data/inetpub/apache-rocketmq/bin/mqshutdown broker
 echo ${L}"sleep 3s"
 sleep 3s
 #启动broker（mq服务器）
+#若是测试机，修改jvm required内存成合适大小
+#--------------------------------
+if [ "$2" = "test" ]; then
+	sed -i 's/JAVA_OPT="${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g"/JAVA_OPT="${JAVA_OPT} -server -Xms128m -Xmx256m -Xmn256m"/' /data/inetpub/apache-rocketmq/bin/runbroker.sh
+	echo ${L}'在runbroker.sh ,已将jvm最低要求内存8g改成了128m，否则启动不起' 
+else 
+	echo ${L_W}'/data/inetpub/apache-rocketmq/bin/runbroker.sh jvm配置 JAVA_OPT="${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g" 表示最低free内存要求8g，如果不够就启动不起' 
+fi
+#--------------------------------
 echo ${L}"startover mq服务器 - master ..."
 nohup sh /data/inetpub/apache-rocketmq/bin/mqbroker -c /data/inetpub/apache-rocketmq/conf/2m-2s-async/${BROKER_M_CONFIG} >/dev/null 2>&1 &
 echo ${L}"startover mq服务器 - slave ..."
