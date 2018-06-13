@@ -1,4 +1,5 @@
 #!/bin/bash
+#执行该脚本前，先执行dos2unix auto_cfg_rmq.sh
 #用法
 #部署第一台 sh auto_cfg_rmq.sh
 #部署第二台 sh auto_cfg_rmq.sh 1
