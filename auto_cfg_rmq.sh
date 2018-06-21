@@ -1,11 +1,14 @@
 #!/bin/bash
 #执行该脚本前，先执行dos2unix auto_cfg_rmq.sh
 #用法
+
+#--------部署命令-每台机只执行其中一条--------
 #空闲内存低于8G，请传参 0 test 或 1 test
 #部署第一台 sh auto_cfg_rmq.sh
 #部署第二台 sh auto_cfg_rmq.sh 1
-#测试机部署第一台 sh auto_cfg_rmq.sh 0 test
-#测试机部署第二台 sh auto_cfg_rmq.sh 1 test
+#内存不够的机部署第一台 sh auto_cfg_rmq.sh 0 test
+#内存不够的机部署第二台 sh auto_cfg_rmq.sh 1 test
+#--------部署命令-每台机只执行其中一条--------
 #@Author Cheng
 #@QQ 8416837
 #init
