@@ -1,6 +1,7 @@
 #!/bin/bash
 #执行该脚本前，先执行dos2unix auto_cfg_rmq.sh
 #用法
+#空闲内存低于8G，请传参 0 test 或 1 test
 #部署第一台 sh auto_cfg_rmq.sh
 #部署第二台 sh auto_cfg_rmq.sh 1
 #测试机部署第一台 sh auto_cfg_rmq.sh 0 test
@@ -27,14 +28,14 @@ fi
 #--------------------------------
 RMQ_ZIP_LINK="http://mirrors.hust.edu.cn/apache/rocketmq/4.1.0-incubating/rocketmq-all-4.1.0-incubating-bin-release.zip"
 NEWLINE="\\n"
-HOST_CONFIG="192.168.4.193 rocketmq_master${NEWLINE}192.168.4.197 rocketmq_slave"
+HOST_CONFIG="192.168.8.100 rocketmq_master${NEWLINE}192.168.8.101 rocketmq_slave"
 SUFFIX=".properties"
 BROKER_SLAVE_S=${BROKER_SLAVE}"-s"
 BROKER_M_CONFIG=${BROKER_MASTER}${SUFFIX}
 BROKER_S_CONFIG=${BROKER_SLAVE_S}${SUFFIX}
 #WAIT_NAMESRV=x
-MASTER_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster_2${NEWLINE}brokerName=${BROKER_MASTER}${NEWLINE}brokerId=0${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}# ASYNC_MASTER 异步复制${NEWLINE}listenPort=10911${NEWLINE}brokerRole=ASYNC_MASTER${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/logs/store/commitlog${NEWLINE}autoCreateTopicEnable=false"
-SLAVE_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster_2${NEWLINE}brokerName=${BROKER_SLAVE}${NEWLINE}brokerId=1${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}brokerRole=SLAVE${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}#更改端口号 同一主机上两broker不可采用同端口 ${NEWLINE}listenPort=11911${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs-slave/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/logs-slave/store/commitlog${NEWLINE}autoCreateTopicEnable=false"
+MASTER_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster${NEWLINE}brokerName=${BROKER_MASTER}${NEWLINE}brokerId=0${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}# ASYNC_MASTER 异步复制${NEWLINE}listenPort=10911${NEWLINE}brokerRole=ASYNC_MASTER${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/logs/store/commitlog${NEWLINE}autoCreateTopicEnable=false"
+SLAVE_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster${NEWLINE}brokerName=${BROKER_SLAVE}${NEWLINE}brokerId=1${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}brokerRole=SLAVE${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}#更改端口号 同一主机上两broker不可采用同端口 ${NEWLINE}listenPort=11911${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs-slave/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/logs-slave/store/commitlog${NEWLINE}autoCreateTopicEnable=false"
 #配置hosts
 echo ${L}"配置hosts ..."
 echo -e ${HOST_CONFIG} >> /etc/hosts
@@ -72,6 +73,12 @@ mkdir -p /data/inetpub/apache-rocketmq/logs
 cd /data/inetpub/apache-rocketmq/logs
 echo ${L}"创建路由日志文件ns.log ..."
 touch ns.log
+
+#关闭服务器
+echo ${L}"关闭mq服务器"
+sh /data/inetpub/apache-rocketmq/bin/mqshutdown broker
+echo ${L}"sleep 3s"
+sleep 3s
 #关闭namesrv
 echo ${L}"关闭路由 ..."
 sh /data/inetpub/apache-rocketmq/bin/mqshutdown namesrv
@@ -80,11 +87,8 @@ sleep 2s
 #启动namesrv
 echo ${L}"启动路由namesrv ..."
 nohup sh /data/inetpub/apache-rocketmq/bin/mqnamesrv >/data/inetpub/apache-rocketmq/logs/ns.log &
-#关闭服务器
-echo ${L}"关闭mq服务器"
-sh /data/inetpub/apache-rocketmq/bin/mqshutdown broker
-echo ${L}"sleep 3s"
-sleep 3s
+#sleep 1s
+sleep 1s
 #启动broker（mq服务器）
 #若是测试机，修改jvm required内存成合适大小
 #--------------------------------
@@ -95,6 +99,8 @@ if [ "$2" = "test" ]; then
 else 
 	echo ${L_W}'/data/inetpub/apache-rocketmq/bin/runbroker.sh jvm配置 JAVA_OPT="${JAVA_OPT} -server -Xms8g -Xmx8g -Xmn4g" 表示最低free内存要求8g，如果不够就启动不起' 
 fi
+#sleep 1s
+sleep 1s
 #--------------------------------
 echo ${L}"startover mq服务器 - master ..."
 nohup sh /data/inetpub/apache-rocketmq/bin/mqbroker -c /data/inetpub/apache-rocketmq/conf/2m-2s-async/${BROKER_M_CONFIG} >/dev/null 2>&1 &
