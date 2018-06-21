@@ -31,6 +31,7 @@ fi
 #--------------------------------
 RMQ_ZIP_LINK="http://mirrors.hust.edu.cn/apache/rocketmq/4.1.0-incubating/rocketmq-all-4.1.0-incubating-bin-release.zip"
 NEWLINE="\\n"
+#注意下面2个ip地址是指服务器的ip地址，不能随便填
 HOST_CONFIG="192.168.8.100 rocketmq_master${NEWLINE}192.168.8.101 rocketmq_slave"
 SUFFIX=".properties"
 BROKER_SLAVE_S=${BROKER_SLAVE}"-s"
