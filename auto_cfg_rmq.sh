@@ -32,14 +32,14 @@ fi
 RMQ_ZIP_LINK="http://mirrors.hust.edu.cn/apache/rocketmq/4.1.0-incubating/rocketmq-all-4.1.0-incubating-bin-release.zip"
 NEWLINE="\\n"
 #注意下面2个ip地址是指服务器的ip地址，根据实际情况填写，不能随便填
-HOST_CONFIG="192.168.8.100 rocketmq_master${NEWLINE}192.168.8.101 rocketmq_slave"
+HOST_CONFIG="*.*.*.* rocketmq_master${NEWLINE}*.*.*.* rocketmq_slave"
 SUFFIX=".properties"
 BROKER_SLAVE_S=${BROKER_SLAVE}"-s"
 BROKER_M_CONFIG=${BROKER_MASTER}${SUFFIX}
 BROKER_S_CONFIG=${BROKER_SLAVE_S}${SUFFIX}
 #WAIT_NAMESRV=x
-MASTER_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster${NEWLINE}brokerName=${BROKER_MASTER}${NEWLINE}brokerId=0${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}# ASYNC_MASTER 异步复制${NEWLINE}listenPort=10911${NEWLINE}brokerRole=ASYNC_MASTER${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/logs/store/commitlog${NEWLINE}autoCreateTopicEnable=true"
-SLAVE_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster${NEWLINE}brokerName=${BROKER_SLAVE}${NEWLINE}brokerId=1${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}brokerRole=SLAVE${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}#更改端口号 同一主机上两broker不可采用同端口 ${NEWLINE}listenPort=11911${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs-slave/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/logs-slave/store/commitlog${NEWLINE}autoCreateTopicEnable=true"
+MASTER_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster${NEWLINE}brokerName=${BROKER_MASTER}${NEWLINE}brokerId=0${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}# ASYNC_MASTER 异步复制${NEWLINE}listenPort=10911${NEWLINE}brokerRole=ASYNC_MASTER${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/store/commitlog${NEWLINE}autoCreateTopicEnable=true"
+SLAVE_CONFIG="namesrvAddr=rocketmq_master:9876;rocketmq_slave:9876${NEWLINE}brokerClusterName=xyz_mq_cluster${NEWLINE}brokerName=${BROKER_SLAVE}${NEWLINE}brokerId=1${NEWLINE}deleteWhen=04${NEWLINE}fileReservedTime=48${NEWLINE}brokerRole=SLAVE${NEWLINE}flushDiskType=ASYNC_FLUSH${NEWLINE}#更改端口号 同一主机上两broker不可采用同端口 ${NEWLINE}listenPort=11911${NEWLINE}storePathRootDir=/data/inetpub/apache-rocketmq/logs-slave/store${NEWLINE}storePathCommitLog=/data/inetpub/apache-rocketmq/store-slave/commitlog${NEWLINE}autoCreateTopicEnable=true"
 #配置hosts
 echo ${L}"配置hosts ..."
 echo -e ${HOST_CONFIG} >> /etc/hosts
